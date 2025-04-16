@@ -31,6 +31,6 @@ export class ProductService {
   }
 
   getImage(id: string) {
-    return this.http.get(`${baseUrl}/api/files/product/${id}`);
+    return (`${baseUrl}/files/product/${id}`);
   }
 }

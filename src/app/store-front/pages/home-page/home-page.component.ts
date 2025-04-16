@@ -4,6 +4,7 @@ import { Component, inject } from '@angular/core';
 import { ProductCardComponent } from '@products/components/product-card/product-card.component';
 import { ProductService } from '@products/services/product.service';
 import {rxResource} from '@angular/core/rxjs-interop';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'home-page',
@@ -19,4 +20,8 @@ export class HomePageComponent {
       return this.productService.getProducts({})
     }
   });
+
+  get products(){
+    return this.productResource.value()?.products;
+  }
 }
