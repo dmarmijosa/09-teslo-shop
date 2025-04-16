@@ -10,5 +10,11 @@
         "angular-page": {
             "skipChangeDetectionOnPush": true
         }
+    },
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
     }
 }
