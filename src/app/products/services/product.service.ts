@@ -19,7 +19,7 @@ export class ProductService {
   private http = inject(HttpClient);
 
   getProducts(options: Options): Observable<ProductResponse> {
-    const { limit = 10, offset = 0, gender = '' } = options;
+    const { limit = 9, offset = 0, gender = '' } = options;
     return this.http.get<ProductResponse>(`${baseUrl}/products`, {
       params: {
         limit,
