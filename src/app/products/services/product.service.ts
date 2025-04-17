@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { ProductResponse } from '@products/interfaces/product.interface';
 import { Observable, tap } from 'rxjs';
+import { Product } from '../interfaces/product.interface';
 
 const baseUrl = environment.baseUrl;
 interface Options {
@@ -19,18 +20,18 @@ export class ProductService {
 
   getProducts(options: Options): Observable<ProductResponse> {
     const { limit = 9, offset = 0, gender = '' } = options;
-    return this.http
-      .get<ProductResponse>(`${baseUrl}/products`, {
-        params: {
-          limit,
-          offset,
-          gender,
-        },
-      })
-      .pipe(tap((resp) => console.log(resp)));
+    return this.http.get<ProductResponse>(`${baseUrl}/products`, {
+      params: {
+        limit,
+        offset,
+        gender,
+      },
+    });
   }
 
-  getImage(id: string) {
-    return (`${baseUrl}/files/product/${id}`);
+  getProductByIdSlug(idSlug: string): Observable<Product> {
+    return this.http
+      .get<Product>(`${baseUrl}/products/${idSlug}`)
+      .pipe(tap((resp) => console.log(resp)));
   }
 }
