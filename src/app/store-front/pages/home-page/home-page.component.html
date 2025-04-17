@@ -3,15 +3,17 @@
 <div
   class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-2 gap-3"
 >
-  @if(products){
+  @if(productResource.isLoading()){
+  <div class="flex justify-center items-center w-screen h-screen">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+  }
   <!--  -->
-  @for (product of products; track product.id) {
+  @if(productResource.hasValue()){ @for (product of products; track product.id)
+  {
   <product-card [product]="product" />
   }@empty {
   <p>No hay productos</p>
-  }
+  } }
   <!--  -->
-  } @else {
-  <span class="loading loading-infinity loading-xl"></span>
-  }
 </div>
