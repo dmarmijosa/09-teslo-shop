@@ -9,7 +9,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class FrontNavbarComponent {
   rutasGender = [
     { ruta: '/gender/men', title: 'Hombres' },
-    { ruta: '/gender/woman', title: 'Mujeres' },
+    { ruta: '/gender/women', title: 'Mujeres' },
     { ruta: '/gender/kids', title: 'Niños' },
   ];
 }
