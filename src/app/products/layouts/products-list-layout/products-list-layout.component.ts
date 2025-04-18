@@ -1,10 +1,4 @@
-import {
-  Component,
-  computed,
-  input,
-  InputSignal,
-  ResourceRef,
-} from '@angular/core';
+import { Component, computed, input, ResourceRef } from '@angular/core';
 import { ProductCardComponent } from '@products/components/product-card/product-card.component';
 import { ProductResponse } from '@products/interfaces/product.interface';
 

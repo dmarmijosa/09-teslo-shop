@@ -1,5 +1,22 @@
 <!-- navbar -->
-<front-navbar/>
-<section class="container mx-auto">
-  <router-outlet/>
+<front-navbar />
+<section (window:scroll)="onScroll($event)" class="container mx-auto">
+  <router-outlet />
+  @if (scrollService.scrollStateValue && scrollService.scrollStateValue > 100) {
+  <button
+    class="fixed bottom-5 right-5 z-50 p-3 bg-gradient-to-br from-accent to-accent-focus text-white rounded-full shadow-lg transform transition duration-200 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+    (click)="scrollTop()"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-6 h-6"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+    </svg>
+  </button>
+  }
 </section>
