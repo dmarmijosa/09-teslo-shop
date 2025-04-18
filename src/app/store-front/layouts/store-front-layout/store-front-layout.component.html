@@ -4,7 +4,7 @@
   <router-outlet />
   @if (scrollService.scrollStateValue && scrollService.scrollStateValue > 100) {
   <button
-    class="fixed bottom-5 right-5 z-50 p-3 bg-gradient-to-br from-accent to-accent-focus text-white rounded-full shadow-lg transform transition duration-200 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+    class="fixed bottom-5 right-5 z-50 p-3 hover:cursor-pointer bg-gradient-to-br from-accent to-accent-focus text-white rounded-full shadow-lg transform transition duration-200 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
     (click)="scrollTop()"
   >
     <svg
