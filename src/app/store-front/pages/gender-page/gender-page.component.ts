@@ -1,15 +1,16 @@
-import {Component, inject} from '@angular/core';
-import {rxResource, toSignal} from '@angular/core/rxjs-interop';
-import {ActivatedRoute} from '@angular/router';
-import {ProductCardComponent} from '@products/components/product-card/product-card.component';
-import {ProductService} from '@products/services/product.service';
-import {map} from 'rxjs';
-import {PaginationComponent} from '@shared/components/pagination/pagination.component';
-import {PaginationService} from '@shared/components/pagination/pagination.service';
+import { Component, inject } from '@angular/core';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
+import { ProductCardComponent } from '@products/components/product-card/product-card.component';
+import { ProductService } from '@products/services/product.service';
+import { map } from 'rxjs';
+import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { PaginationService } from '@shared/components/pagination/pagination.service';
+import { ProductsListLayoutComponent } from '../../../products/layouts/products-list-layout/products-list-layout.component';
 
 @Component({
   selector: 'gender-page',
-  imports: [ProductCardComponent, PaginationComponent],
+  imports: [ProductsListLayoutComponent, PaginationComponent],
   templateUrl: './gender-page.component.html',
 })
 export class GenderPageComponent {
@@ -20,16 +21,15 @@ export class GenderPageComponent {
   gender = toSignal(this.router.params.pipe(map(({ gender }) => gender)));
 
   genderResourse = rxResource({
-    request: () => ({ gender: this.gender(), page: this.paginationService.currentPage() - 1 }),
+    request: () => ({
+      gender: this.gender(),
+      page: this.paginationService.currentPage() - 1,
+    }),
     loader: ({ request }) => {
       return this.productService.getProducts({
         gender: request.gender,
-        offset: request.page * 9
+        offset: request.page * 9,
       });
     },
   });
-
-  get products(){
-    return this.genderResourse.value()?.products;
-  }
 }
