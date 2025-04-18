@@ -24,8 +24,8 @@ export class StoreFrontLayoutComponent {
     this.scrollService.setScrollState(scrollWindows);
   }
 
-  scrollTop(){
-    window.scrollTo(0,0);
+  scrollTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
 
