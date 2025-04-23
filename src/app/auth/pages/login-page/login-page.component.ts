@@ -1,7 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-
+import { FormUtils } from '@shared/utils/forms-utils';
+import { AuthService } from '@auth/services/auth.service';
 
 @Component({
   selector: 'login-page',
@@ -10,11 +11,20 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 })
 export class LoginPageComponent {
   private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+
   hasError = signal(false);
   isPosting = signal(false);
 
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        Validators.pattern(FormUtils.emailPattern),
+      ],
+    ],
     password: ['', [Validators.required]],
   });
 
@@ -28,6 +38,8 @@ export class LoginPageComponent {
     }
 
     const { email = '', password = '' } = this.loginForm.value;
-    console.log({ email, password });
+    this.authService.login(email!, password!).subscribe((resp) => {
+      console.log(resp);
+    });
   }
 }
