@@ -42,7 +42,9 @@ export class LoginPageComponent {
     this.authService.login(email!, password!).subscribe({
       next: (isAuthenticated) => {
         if (isAuthenticated) {
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl('/', {
+            replaceUrl: true,
+          });
           this.loginForm.reset();
           return;
         }
@@ -61,6 +63,4 @@ export class LoginPageComponent {
     }, 2000);
     return;
   }
-
-
 }
