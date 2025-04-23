@@ -28,7 +28,6 @@ export class AuthService {
     if (this._user()) {
       return 'authenticated';
     }
-
     return 'not-authenticated';
   });
 
@@ -40,25 +39,15 @@ export class AuthService {
     return this.http
       .post<AuthResponse>(`${baseUrl}/auth/login`, { email, password })
       .pipe(
-        tap((resp) => {
-          this._authStatus.set('authenticated');
-          this._user.set(resp.user);
-          this._token.set(resp.token);
-          localStorage.setItem('token', resp.token);
-        }),
-        map(() => true),
-        catchError((error: any) => {
-          this._user.set(null);
-          this._token.set(null);
-          this._authStatus.set('not-authenticated');
-          return of(false);
-        })
+        map((resp) => this.handleAuthSuccess(resp)),
+        catchError((error: any) => this.handdleAuthError(error))
       );
   }
 
   checkAuthStatus(): Observable<boolean> {
     const token = localStorage.getItem('token');
     if (!token) {
+      this.logout();
       return of(false);
     }
     return this.http
@@ -68,19 +57,29 @@ export class AuthService {
         },
       })
       .pipe(
-        tap((resp) => {
-          this._authStatus.set('authenticated');
-          this._user.set(resp.user);
-          this._token.set(resp.token);
-          localStorage.setItem('token', resp.token);
-        }),
-        map(() => true),
-        catchError((error: any) => {
-          this._user.set(null);
-          this._token.set(null);
-          this._authStatus.set('not-authenticated');
-          return of(false);
-        })
+        map((resp) => this.handleAuthSuccess(resp)),
+        catchError((error: any) => this.handdleAuthError(error))
       );
+  }
+
+  logout() {
+    this._user.set(null);
+    this._token.set(null);
+    this._authStatus.set('not-authenticated');
+
+    localStorage.clear();
+  }
+
+  private handleAuthSuccess({ token, user }: AuthResponse): boolean {
+    this._authStatus.set('authenticated');
+    this._user.set(user);
+    this._token.set(token);
+    localStorage.setItem('token', token);
+    return true;
+  }
+
+  private handdleAuthError(error: any): Observable<boolean> {
+    this.logout();
+    return of(false);
   }
 }
