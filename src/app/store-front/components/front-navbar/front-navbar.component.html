@@ -60,7 +60,9 @@
     }@else if(authService.authStatus() === 'not-authenticated'){
     <a class="btn btn-secondary" routerLink="/auth/login">Login</a>
     }@else {
-      <a class="btn btn-ghost">...</a>
+    <a class="btn btn-ghost">
+      <span class="loading loading-spinner loading-xs"></span
+    ></a>
     }
   </div>
 </div>

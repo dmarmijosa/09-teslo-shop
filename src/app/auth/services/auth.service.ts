@@ -44,6 +44,19 @@ export class AuthService {
       );
   }
 
+  register(email: string, password: string, fullName: string) {
+    return this.http
+      .post<AuthResponse>(`${baseUrl}/auth/register`, {
+        email,
+        password,
+        fullName,
+      })
+      .pipe(
+        map((resp) => this.handleAuthSuccess(resp)),
+        catchError((error: any) => this.handdleAuthError(error))
+      );
+  }
+
   checkAuthStatus(): Observable<boolean> {
     const token = localStorage.getItem('token');
     if (!token) {
