@@ -4,7 +4,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { AuthResponse } from '@auth/interfaces/auth-response.interface';
 import { User } from '@auth/interfaces/user.interface';
 import { environment } from '@environments/environment';
-import { catchError, map, Observable, of, tap } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 
 type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
 const baseUrl = environment.baseUrl;
@@ -14,7 +14,7 @@ const baseUrl = environment.baseUrl;
 export class AuthService {
   private _authStatus = signal<AuthStatus>('checking');
   private _user = signal<User | null>(null);
-  private _token = signal<string | null>(null);
+  private _token = signal<string | null>(localStorage.getItem('token'));
 
   private http = inject(HttpClient);
 
@@ -51,11 +51,7 @@ export class AuthService {
       return of(false);
     }
     return this.http
-      .get<AuthResponse>(`${baseUrl}/auth/check-status`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get<AuthResponse>(`${baseUrl}/auth/check-status`)
       .pipe(
         map((resp) => this.handleAuthSuccess(resp)),
         catchError((error: any) => this.handdleAuthError(error))
