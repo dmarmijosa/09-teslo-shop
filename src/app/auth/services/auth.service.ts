@@ -51,7 +51,14 @@ export class AuthService {
       return of(false);
     }
     return this.http
-      .get<AuthResponse>(`${baseUrl}/auth/check-status`)
+      .get<AuthResponse>(
+        `${baseUrl}/auth/check-status`
+        //   {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // }
+      )
       .pipe(
         map((resp) => this.handleAuthSuccess(resp)),
         catchError((error: any) => this.handdleAuthError(error))
