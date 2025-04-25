@@ -23,10 +23,10 @@ export class ProductDetailsComponent {
     ],
     price: ['', [Validators.required, Validators.min(0)]],
     stock: ['', [Validators.required, Validators.min(0)]],
-    size: [['']],
+    sizes: [['']],
     images: [[]],
     tags: [''],
-    gener: [
+    gender: [
       'men',
       [Validators.required, Validators.pattern(/men|women|kid|unisex/)],
     ],
@@ -35,13 +35,22 @@ export class ProductDetailsComponent {
   ngOnInit() {
     //this.productForm.reset(this.product() as any);
     this.setFormValue(this.product());
-
   }
 
-  setFormValue(formLike: Partial<Product>){
+  setFormValue(formLike: Partial<Product>) {
     this.productForm.reset(formLike as any);
     //this.productForm.patchValue(formLike as any);
-    this.productForm.patchValue({tags: formLike.tags?.join(',')});
+    this.productForm.patchValue({ tags: formLike.tags?.join(',') });
+  }
+
+  onSizeClick(size: string) {
+    const currentSizes = this.productForm.get('sizes')?.value ?? [];
+    if (currentSizes.includes(size)) {
+      currentSizes.splice(currentSizes.indexOf(size), 1);
+    } else {
+      currentSizes.push(size);
+    }
+    this.productForm.patchValue({ sizes: currentSizes });
   }
 
   onSubmit() {
