@@ -25,6 +25,11 @@
         formControlName="fullName"
       />
     </label>
+    @if(formuUtils.isValidField(registerForm, 'fullName')) {
+    <p class="text-error text-sm">
+      {{ formuUtils.getFiledErrorName(registerForm, "fullName") }}
+    </p>
+    }
     <label class="input input-bordered flex items-center gap-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +51,11 @@
         formControlName="email"
       />
     </label>
-
+    @if(formuUtils.isValidField(registerForm, 'email')) {
+    <p class="text-error text-sm">
+      {{ formuUtils.getFiledErrorName(registerForm, "email") }}
+    </p>
+    }
     <label class="input input-bordered flex items-center gap-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -67,6 +76,11 @@
         formControlName="password"
       />
     </label>
+    @if(formuUtils.isValidField(registerForm, 'password')) {
+    <p class="text-error text-sm">
+      {{ formuUtils.getFiledErrorName(registerForm, "password") }}
+    </p>
+    }
     <label class="input input-bordered flex items-center gap-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +101,11 @@
         formControlName="password2"
       />
     </label>
-
+    @if(formuUtils.isFieldOneEqualFielTwo('password', 'password2')) {
+      <p class="text-error text-sm">
+        {{ formuUtils.getFiledErrorName(registerForm, "password2") }}
+      </p>
+      }
     <button type="submit" class="btn btn-secondary">
       @if(isLoading()){
       <span class="loading loading-spinner loading-xs"></span>

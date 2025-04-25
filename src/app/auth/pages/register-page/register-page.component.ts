@@ -3,7 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@auth/services/auth.service';
 import { FormUtils } from '../../../shared/utils/forms-utils';
-import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'register-page',
@@ -11,6 +10,7 @@ import { JsonPipe } from '@angular/common';
   templateUrl: './register-page.component.html',
 })
 export class RegisterPageComponent {
+  formuUtils = FormUtils;
   private router = inject(Router);
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
@@ -56,6 +56,7 @@ export class RegisterPageComponent {
 
   onRegister() {
     if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
       return this.hasErrorResponse();
     }
 
