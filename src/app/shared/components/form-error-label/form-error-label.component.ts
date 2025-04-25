@@ -5,7 +5,10 @@ import { FormUtils } from '@shared/utils/forms-utils';
 @Component({
   selector: 'form-error-label',
   imports: [],
-  templateUrl: './form-error-label.component.html',
+  template: `
+  <span class="text-red-500 text-xs">{{ errorMessage }}</span>
+
+  `
 })
 export class FormErrorLabelComponent {
   control = input.required<AbstractControl>();
