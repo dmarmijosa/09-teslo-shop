@@ -4,7 +4,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { AuthResponse } from '@auth/interfaces/auth-response.interface';
 import { User } from '@auth/interfaces/user.interface';
 import { environment } from '@environments/environment';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, shareReplay } from 'rxjs';
 
 type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
 const baseUrl = environment.baseUrl;
@@ -34,6 +34,11 @@ export class AuthService {
   user = computed<User | null>(() => this._user());
 
   token = computed<string | null>(() => this._token());
+
+  isAdmin = computed(() => {
+    if (!this._user()) return false;
+    return this._user()!.roles.includes('admin') ?? false;
+  });
 
   login(email: string, password: string): Observable<boolean> {
     return this.http
@@ -74,7 +79,7 @@ export class AuthService {
       )
       .pipe(
         map((resp) => this.handleAuthSuccess(resp)),
-        catchError((error: any) => this.handdleAuthError(error))
+        catchError((error: any) => this.handdleAuthError(error)),
       );
   }
 
