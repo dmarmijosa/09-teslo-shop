@@ -3,16 +3,18 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductCarouselComponent } from '@products/components/product-carousel/product-carousel.component';
 import { Product } from '@products/interfaces/product.interface';
 import { FormUtils } from '@shared/utils/forms-utils';
+import { FormErrorLabelComponent } from "../../../../../shared/components/form-error-label/form-error-label.component";
 
 @Component({
   selector: 'product-details',
-  imports: [ProductCarouselComponent, ReactiveFormsModule],
+  imports: [ProductCarouselComponent, ReactiveFormsModule, FormErrorLabelComponent],
   templateUrl: './product-details.component.html',
 })
 export class ProductDetailsComponent {
   product = input.required<Product>();
   sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   fb = inject(FormBuilder);
+  formUtils = FormUtils;
 
   productForm = this.fb.group({
     title: ['', Validators.required],
@@ -54,6 +56,6 @@ export class ProductDetailsComponent {
   }
 
   onSubmit() {
-    console.log(this.productForm.value);
+    console.log(this.productForm.valid);
   }
 }
