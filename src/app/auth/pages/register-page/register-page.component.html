@@ -27,7 +27,7 @@
     </label>
     @if(formuUtils.isValidField(registerForm, 'fullName')) {
     <p class="text-error text-sm">
-      {{ formuUtils.getFiledErrorName(registerForm, "fullName") }}
+      {{ formuUtils.getFieldError(registerForm, "fullName") }}
     </p>
     }
     <label class="input input-bordered flex items-center gap-2">
@@ -53,7 +53,7 @@
     </label>
     @if(formuUtils.isValidField(registerForm, 'email')) {
     <p class="text-error text-sm">
-      {{ formuUtils.getFiledErrorName(registerForm, "email") }}
+      {{ formuUtils.getFieldError(registerForm, "email") }}
     </p>
     }
     <label class="input input-bordered flex items-center gap-2">
@@ -78,7 +78,7 @@
     </label>
     @if(formuUtils.isValidField(registerForm, 'password')) {
     <p class="text-error text-sm">
-      {{ formuUtils.getFiledErrorName(registerForm, "password") }}
+      {{ formuUtils.getFieldError(registerForm, "password") }}
     </p>
     }
     <label class="input input-bordered flex items-center gap-2">
@@ -101,9 +101,9 @@
         formControlName="password2"
       />
     </label>
-    @if(formuUtils.isFieldOneEqualFielTwo('password', 'password2')) {
+    @if(formuUtils.isFieldOneEqualFieldTwo('password', 'password2')) {
       <p class="text-error text-sm">
-        {{ formuUtils.getFiledErrorName(registerForm, "password2") }}
+        {{ formuUtils.getFieldError(registerForm, "password2") }}
       </p>
       }
     <button type="submit" class="btn btn-secondary">

@@ -14,76 +14,95 @@ async function sleep() {
 }
 
 export class FormUtils {
+  // Expresiones regulares
   static namePattern = '([a-zA-Z]+) ([a-zA-Z]+)';
   static emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
   static notOnlySpacesPattern = '^[a-zA-Z0-9]+$';
-  static isValidField(form: FormGroup, fileName: string): boolean | null {
-    return !!form.controls[fileName].errors && form.controls[fileName].touched;
-  }
-  static getFiledErrorName(myForm: FormGroup, fileName: string): string | null {
-    if (!myForm.controls[fileName]) return null;
-    const error = myForm.controls[fileName].errors ?? {};
-    return this.getErrorMessages(error);
+  static slugPattern = '^[a-z0-9_]+(?:-[a-z0-9_]+)*$';
+
+  static getTextError(errors: ValidationErrors) {
+    for (const key of Object.keys(errors)) {
+      switch (key) {
+        case 'required':
+          return 'Este campo es requerido';
+
+        case 'minlength':
+          return `Mínimo de ${errors['minlength'].requiredLength} caracteres.`;
+
+        case 'min':
+          return `Valor mínimo de ${errors['min'].min}`;
+
+        case 'email':
+          return `El valor ingresado no es un correo electrónico`;
+
+        case 'emailTaken':
+          return `El correo electrónico ya está siendo usado por otro usuario`;
+
+        case 'noStrider':
+          return `No se puede usar el username de strider en la app`;
+
+        case 'pattern':
+          if (errors['pattern'].requiredPattern === FormUtils.emailPattern) {
+            return 'El valor ingresado no luce como un correo electrónico';
+          }
+
+          return 'Error de patrón contra expresión regular';
+
+        default:
+          return `Error de validación no controlado ${key}`;
+      }
+    }
+
+    return null;
   }
 
-  static isValidFielInArray(formArray: FormArray, index: number) {
+  static isValidField(form: FormGroup, fieldName: string): boolean | null {
+    return (
+      !!form.controls[fieldName].errors && form.controls[fieldName].touched
+    );
+  }
+
+  static getFieldError(form: FormGroup, fieldName: string): string | null {
+    if (!form.controls[fieldName]) return null;
+
+    const errors = form.controls[fieldName].errors ?? {};
+
+    return FormUtils.getTextError(errors);
+  }
+
+  static isValidFieldInArray(formArray: FormArray, index: number) {
     return (
       formArray.controls[index].errors && formArray.controls[index].touched
     );
   }
 
-  static getFileErrorInArray(
+  static getFieldErrorInArray(
     formArray: FormArray,
     index: number
   ): string | null {
-    if (!formArray.controls[index]) return null;
-    const error = formArray.controls[index].errors ?? {};
-    return this.getErrorMessages(error);
-  }
-  private static getErrorMessages(error: ValidationErrors) {
-    const patternMessages: { [key: string]: string } = {
-      [this.emailPattern]: 'El correo debe ser valido',
-      [this.notOnlySpacesPattern]: 'El username no debe tener espacios',
-    };
-    for (const key of Object.keys(error)) {
-      switch (key) {
-        case 'required':
-          return 'Este campo requerido';
-        case 'minlength':
-          return `El campo debe tener al menos ${error[key].requiredLength} caracteres`;
-        case 'min':
-          return `El campo debe ser mayor a ${error[key].min}`;
-        case 'pattern':
-          const requiredPattern = error[key]?.requiredPattern;
-          if (requiredPattern && patternMessages[requiredPattern]) {
-            return patternMessages[requiredPattern];
-          }
-          return 'El formato del campo es inválido';
-        case 'emailTaken':
-          return `El correo ya existe`;
-        case 'noStrider':
-          return 'El username no puede ser strider'
-        default:
-          return 'Campo inválido';
-      }
-    }
-    return null;
+    if (formArray.controls.length === 0) return null;
+
+    const errors = formArray.controls[index].errors ?? {};
+
+    return FormUtils.getTextError(errors);
   }
 
-  ///Validaiones personalizadas
-  static isFieldOneEqualFielTwo(field1: string, field2: string) {
+  static isFieldOneEqualFieldTwo(field1: string, field2: string) {
     return (formGroup: AbstractControl) => {
       const field1Value = formGroup.get(field1)?.value;
       const field2Value = formGroup.get(field2)?.value;
-      return field1Value === field2Value ? null : { passwordNotEqual: true };
+
+      return field1Value === field2Value ? null : { passwordsNotEqual: true };
     };
   }
 
-  static async chekingServerResponse(
+  static async checkingServerResponse(
     control: AbstractControl
   ): Promise<ValidationErrors | null> {
     console.log('Validando contra servidor');
-    await sleep();
+
+    await sleep(); // 2 segundos y medio
+
     const formValue = control.value;
 
     if (formValue === 'hola@mundo.com') {
@@ -96,8 +115,8 @@ export class FormUtils {
   }
 
   static notStrider(control: AbstractControl): ValidationErrors | null {
-    return (control.value as string).trim().toLowerCase() === 'strider'
-      ? { noStrider: true }
-      : null;
+    const value = control.value;
+
+    return value === 'strider' ? { noStrider: true } : null;
   }
 }

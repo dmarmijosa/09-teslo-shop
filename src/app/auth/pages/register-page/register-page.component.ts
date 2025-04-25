@@ -50,7 +50,7 @@ export class RegisterPageComponent {
       ],
     },
     {
-      validators: [FormUtils.isFieldOneEqualFielTwo('password', 'password2')],
+      validators: [FormUtils.isFieldOneEqualFieldTwo('password', 'password2')],
     }
   );
 
