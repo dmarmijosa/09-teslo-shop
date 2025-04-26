@@ -24,6 +24,9 @@ export class ProductDetailsComponent {
   product = input.required<Product>();
   isLoading = signal(false);
   wasSave = signal(false);
+  tempImages = signal<string[]>([]);
+  imageFileList: FileList | undefined = undefined;
+
   sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   fb = inject(FormBuilder);
   formUtils = FormUtils;
@@ -100,5 +103,19 @@ export class ProductDetailsComponent {
     setTimeout(() => {
       this.wasSave.set(false);
     }, 3000);
+  }
+
+  onFileChange(event: Event) {
+    const filesList = (event.target as HTMLInputElement).files;
+    this.tempImages.set([]);
+    if (!filesList) return;
+
+    this.imageFileList = filesList;
+
+    const imageUrls = Array.from(filesList ?? []).map((file) => {
+      return URL.createObjectURL(file);
+    });
+
+    this.tempImages.set(imageUrls);
   }
 }
