@@ -49,10 +49,7 @@ export class ProductService {
 
     return this.http
       .get<Product>(`${baseUrl}/products/${idSlug}`)
-
-      .pipe(
-        tap((resp) => this.productCache.set(idSlug, resp)),
-      );
+      .pipe(tap((resp) => this.productCache.set(idSlug, resp)));
   }
 
   getProductById(id: string): Observable<Product> {
@@ -63,8 +60,19 @@ export class ProductService {
     return this.http
       .get<Product>(`${baseUrl}/products/${id}`)
 
-      .pipe(
-        tap((resp) => this.productCache.set(id, resp)),
-      );
+      .pipe(tap((resp) => this.productCache.set(id, resp)));
+  }
+
+  updateProduct(id: string, productLike: Partial<Product>): Observable<Product> {
+    // const id = productLike.id;
+    // if (!id) throw new Error('Product ID is required');
+    // return this.http.put<Product>(`${baseUrl}/products/${id}`, productLike).pipe(
+    //   tap((resp) => {
+    //     this.productCache.set(id, resp);
+    //     this.productsCache.clear();
+    //   })
+    // );
+    return this.http.patch<Product>(`${baseUrl}/products/${id}`, productLike);
+
   }
 }

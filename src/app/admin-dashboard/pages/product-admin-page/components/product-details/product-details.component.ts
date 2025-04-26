@@ -1,17 +1,25 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductCarouselComponent } from '@products/components/product-carousel/product-carousel.component';
 import { Product } from '@products/interfaces/product.interface';
 import { FormUtils } from '@shared/utils/forms-utils';
-import { FormErrorLabelComponent } from "../../../../../shared/components/form-error-label/form-error-label.component";
+
+import { ProductService } from '@products/services/product.service';
+import { FormErrorLabelComponent } from '@shared/components/form-error-label/form-error-label.component';
 
 @Component({
   selector: 'product-details',
-  imports: [ProductCarouselComponent, ReactiveFormsModule, FormErrorLabelComponent],
+  imports: [
+    ProductCarouselComponent,
+    ReactiveFormsModule,
+    FormErrorLabelComponent,
+  ],
   templateUrl: './product-details.component.html',
 })
 export class ProductDetailsComponent {
+  productService = inject(ProductService);
   product = input.required<Product>();
+  isLoading = signal(false);
   sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   fb = inject(FormBuilder);
   formUtils = FormUtils;
@@ -56,6 +64,30 @@ export class ProductDetailsComponent {
   }
 
   onSubmit() {
-    console.log(this.productForm.valid);
+    const isValid = this.productForm.valid;
+    const formValue = this.productForm.value;
+
+    this.productForm.markAllAsTouched();
+    if (!isValid) return;
+
+    const productLike: Partial<Product> = {
+      ...(formValue as any),
+      tags: formValue.tags
+        ?.toLowerCase()
+        .split(',')
+        .map((tag: string) => tag.trim() ?? []),
+    };
+
+    this.isLoading.set(true);
+    this.productService
+      .updateProduct(this.product().id, productLike)
+      .subscribe({
+        next: (product) => {
+          console.log('Product updated', product);
+        },
+        complete: () => {
+          this.isLoading.set(false);
+        }
+      });
   }
 }
