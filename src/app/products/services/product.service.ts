@@ -5,7 +5,7 @@ import {
   Gender,
   ProductResponse,
 } from '@products/interfaces/product.interface';
-import { Observable, of, tap } from 'rxjs';
+import { forkJoin, map, Observable, of, tap } from 'rxjs';
 import { Product } from '../interfaces/product.interface';
 import { User } from '@auth/interfaces/user.interface';
 
@@ -93,8 +93,6 @@ export class ProductService {
       .pipe(tap((product) => this.updateProductCache(product)));
   }
 
-
-
   createProdut(productLike: Partial<Product>): Observable<Product> {
     return this.http
       .post<Product>(`${baseUrl}/products`, productLike)
@@ -110,5 +108,22 @@ export class ProductService {
           currentProduct.id === productId ? product : currentProduct
       );
     });
+  }
+
+  uploadImages(images?: FileList): Observable<string[]> {
+    if (!images) return of([]);
+
+    const uploadObservables = Array.from(images).map((imageFile) =>
+      this.uploadImage(imageFile)
+    );
+    return forkJoin(uploadObservables).pipe(tap((resp) => console.log(resp)));
+  }
+
+  uploadImage(imageFile: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('file', imageFile);
+    return this.http
+      .post<{ fileName: string }>(`${baseUrl}/files/product`, formData)
+      .pipe(map((resp) => resp.fileName));
   }
 }
