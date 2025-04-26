@@ -93,13 +93,17 @@ export class ProductDetailsComponent {
 
     if (this.product().id === 'new') {
       const product = await firstValueFrom(
-        this.productService.createProdut(productLike)
+        this.productService.createProdut(productLike, this.imageFileList)
       );
       this.isLoading.set(false);
       this.router.navigate(['/admin/products', product.id]);
     } else {
       await firstValueFrom(
-        this.productService.updateProduct(this.product().id, productLike)
+        this.productService.updateProduct(
+          this.product().id,
+          productLike,
+          this.imageFileList
+        )
       );
       this.isLoading.set(false);
     }

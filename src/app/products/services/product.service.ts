@@ -5,7 +5,7 @@ import {
   Gender,
   ProductResponse,
 } from '@products/interfaces/product.interface';
-import { forkJoin, map, Observable, of, tap } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Product } from '../interfaces/product.interface';
 import { User } from '@auth/interfaces/user.interface';
 
@@ -86,17 +86,43 @@ export class ProductService {
 
   updateProduct(
     id: string,
-    productLike: Partial<Product>
+    productLike: Partial<Product>,
+    imageFileList?: FileList
   ): Observable<Product> {
-    return this.http
-      .patch<Product>(`${baseUrl}/products/${id}`, productLike)
-      .pipe(tap((product) => this.updateProductCache(product)));
+    const currentProduct = productLike.images ?? [];
+    return this.uploadImages(imageFileList).pipe(
+      map((imageNames) => ({
+        ...productLike,
+        images: [...currentProduct, ...imageNames],
+      })),
+      switchMap((updateProduct) =>
+        this.http.patch<Product>(`${baseUrl}/products/${id}`, updateProduct)
+      ),
+      tap((product) => this.updateProductCache(product))
+    );
+
+    // return this.http
+    //   .patch<Product>(`${baseUrl}/products/${id}`, productLike)
+    //   .pipe(tap((product) => this.updateProductCache(product)));
   }
 
-  createProdut(productLike: Partial<Product>): Observable<Product> {
-    return this.http
-      .post<Product>(`${baseUrl}/products`, productLike)
-      .pipe(tap((product) => this.updateProductCache(product)));
+  createProdut(
+    productLike: Partial<Product>,
+    imageFileList?: FileList
+  ): Observable<Product> {
+    return this.uploadImages(imageFileList).pipe(
+      map((imageNames) => ({
+        ...productLike,
+        images: imageNames,
+      })),
+      switchMap((newProduct) =>
+        this.http.post<Product>(`${baseUrl}/products`, newProduct)
+      ),
+      tap((product) => this.updateProductCache(product))
+    );
+    // return this.http
+    //   .post<Product>(`${baseUrl}/products`, productLike)
+    //   .pipe(tap((product) => this.updateProductCache(product)));
   }
 
   updateProductCache(product: Product) {
