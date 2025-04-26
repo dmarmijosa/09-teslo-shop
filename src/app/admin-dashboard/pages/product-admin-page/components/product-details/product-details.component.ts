@@ -1,4 +1,4 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductCarouselComponent } from '@products/components/product-carousel/product-carousel.component';
 import { Product } from '@products/interfaces/product.interface';
@@ -26,6 +26,10 @@ export class ProductDetailsComponent {
   wasSave = signal(false);
   tempImages = signal<string[]>([]);
   imageFileList: FileList | undefined = undefined;
+
+  imagesToCarousel = computed(() => {
+    return [...this.product().images, ...this.tempImages()];
+  });
 
   sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   fb = inject(FormBuilder);

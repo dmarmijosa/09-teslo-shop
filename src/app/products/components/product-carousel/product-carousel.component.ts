@@ -1,7 +1,13 @@
-import { Component, ElementRef, input, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  input,
+  SimpleChanges,
+  viewChild,
+} from '@angular/core';
 // import Swiper JS
 import Swiper from 'swiper';
-import {Pagination, Navigation} from 'swiper/modules';
+import { Pagination, Navigation } from 'swiper/modules';
 // import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -11,30 +17,40 @@ import { ProductImagePipe } from '@products/pipes/product-image.pipe';
   selector: 'product-carousel',
   imports: [ProductImagePipe],
   templateUrl: './product-carousel.component.html',
-  styles:`
+  styles: `
     .swiper{
       width:100%;
       height:30rem;
     }
-  `
+  `,
 })
 export class ProductCarouselComponent {
   images = input.required<string[]>();
-  swiperDiv = viewChild.required<ElementRef>('swiperDiv')
+  swiperDiv = viewChild.required<ElementRef>('swiperDiv');
+  swiper: Swiper | undefined;
 
-  ngAfterViewInit(){
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['images'].firstChange) return;
+    if(!this.swiper) return;
+    this.swiper.destroy(true, true);
+    this.swiperInit();
+
+  }
+
+  ngAfterViewInit() {
+    this.swiperInit();
+  }
+
+  swiperInit() {
     const element = this.swiperDiv().nativeElement;
-    if(!element) return;
+    if (!element) return;
 
-    const swiper = new Swiper(element, {
+    this.swiper = new Swiper(element, {
       // Optional parameters
       direction: 'horizontal',
       loop: true,
 
-      modules:[
-        Navigation,
-        Pagination
-      ],
+      modules: [Navigation, Pagination],
 
       // If we need pagination
       pagination: {
@@ -52,6 +68,5 @@ export class ProductCarouselComponent {
         el: '.swiper-scrollbar',
       },
     });
-
   }
 }
