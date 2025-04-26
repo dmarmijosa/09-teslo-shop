@@ -63,16 +63,23 @@ export class ProductService {
       .pipe(tap((resp) => this.productCache.set(id, resp)));
   }
 
-  updateProduct(id: string, productLike: Partial<Product>): Observable<Product> {
-    // const id = productLike.id;
-    // if (!id) throw new Error('Product ID is required');
-    // return this.http.put<Product>(`${baseUrl}/products/${id}`, productLike).pipe(
-    //   tap((resp) => {
-    //     this.productCache.set(id, resp);
-    //     this.productsCache.clear();
-    //   })
-    // );
-    return this.http.patch<Product>(`${baseUrl}/products/${id}`, productLike);
+  updateProduct(
+    id: string,
+    productLike: Partial<Product>
+  ): Observable<Product> {
+    return this.http
+      .patch<Product>(`${baseUrl}/products/${id}`, productLike)
+      .pipe(tap((product) => this.updateProductCache(product)));
+  }
 
+  updateProductCache(product: Product) {
+    const productId = product.id;
+    this.productCache.set(productId, product);
+    this.productsCache.forEach((productResponse) => {
+      productResponse.products = productResponse.products.map(
+        (currentProduct) =>
+          currentProduct.id === productId ? product : currentProduct
+      );
+    });
   }
 }
