@@ -31,10 +31,15 @@ export class ProductCarouselComponent {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['images'].firstChange) return;
-    if(!this.swiper) return;
+    if (!this.swiper) return;
     this.swiper.destroy(true, true);
-    this.swiperInit();
+    const paginationElement =
+      this.swiperDiv().nativeElement.querySelector('.swiper-pagination');
 
+    paginationElement.innerHTML = '';
+    setTimeout(() => {
+      this.swiperInit();
+    }, 100);
   }
 
   ngAfterViewInit() {
