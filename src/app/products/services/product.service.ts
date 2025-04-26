@@ -1,9 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
-import { ProductResponse } from '@products/interfaces/product.interface';
+import {
+  Gender,
+  ProductResponse,
+} from '@products/interfaces/product.interface';
 import { Observable, of, tap } from 'rxjs';
 import { Product } from '../interfaces/product.interface';
+import { User } from '@auth/interfaces/user.interface';
 
 const baseUrl = environment.baseUrl;
 interface Options {
@@ -12,12 +16,25 @@ interface Options {
   gender?: string;
 }
 
+const emptyProduct: Product = {
+  id: 'new',
+  title: '',
+  price: 0,
+  description: '',
+  slug: '',
+  stock: 0,
+  sizes: [],
+  gender: Gender.Men,
+  tags: [],
+  images: [],
+  user: {} as User,
+};
+
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   private http = inject(HttpClient);
-
   private productsCache = new Map<string, ProductResponse>();
   private productCache = new Map<string, Product>();
 
@@ -53,6 +70,10 @@ export class ProductService {
   }
 
   getProductById(id: string): Observable<Product> {
+    if (id === 'new') {
+      return of(emptyProduct);
+    }
+
     if (this.productCache.has(id)) {
       return of(this.productCache.get(id)!);
     }
@@ -69,6 +90,14 @@ export class ProductService {
   ): Observable<Product> {
     return this.http
       .patch<Product>(`${baseUrl}/products/${id}`, productLike)
+      .pipe(tap((product) => this.updateProductCache(product)));
+  }
+
+
+
+  createProdut(productLike: Partial<Product>): Observable<Product> {
+    return this.http
+      .post<Product>(`${baseUrl}/products`, productLike)
       .pipe(tap((product) => this.updateProductCache(product)));
   }
 

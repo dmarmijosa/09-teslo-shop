@@ -6,6 +6,7 @@ import { FormUtils } from '@shared/utils/forms-utils';
 
 import { ProductService } from '@products/services/product.service';
 import { FormErrorLabelComponent } from '@shared/components/form-error-label/form-error-label.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'product-details',
@@ -18,6 +19,7 @@ import { FormErrorLabelComponent } from '@shared/components/form-error-label/for
 })
 export class ProductDetailsComponent {
   productService = inject(ProductService);
+  router = inject(Router);
   product = input.required<Product>();
   isLoading = signal(false);
   sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -79,15 +81,28 @@ export class ProductDetailsComponent {
     };
 
     this.isLoading.set(true);
-    this.productService
-      .updateProduct(this.product().id, productLike)
-      .subscribe({
+
+    if (this.product().id === 'new') {
+      this.productService.createProdut(productLike).subscribe({
         next: (product) => {
-          console.log('Product updated', product);
+          console.log('Product creado', product);
+          this.router.navigate(['/admin/products', product.id]);
         },
         complete: () => {
           this.isLoading.set(false);
-        }
+        },
       });
+    } else {
+      this.productService
+        .updateProduct(this.product().id, productLike)
+        .subscribe({
+          next: (product) => {
+            console.log('Product updated', product);
+          },
+          complete: () => {
+            this.isLoading.set(false);
+          },
+        });
+    }
   }
 }

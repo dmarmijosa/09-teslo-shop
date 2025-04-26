@@ -6,12 +6,14 @@
 <div class="divider"></div>
 <div class="flex items-center justify-between">
   <pagination [pages]="productResource.value()?.pages ?? 0"  [currentPage]="paginationService.currentPage()"/>
-  <select class="select select-bordered -mt-4 w-32" #select (change)="productPerPage.set(+select.value)">
+  <select class="select select-bordered -mt-5 w-32" #select (change)="productPerPage.set(+select.value)">
     <option value="10">10</option>
     <option value="20">20</option>
     <option value="50">50</option>
     <option value="100">100</option>
   </select>
+  <div class="flex flex-1"></div>
+  <button routerLink="/admin/products/new" class="btn btn-primary -mt-5">Nuevo producto</button>
 </div>
 <!---->
 <product-table [products]="productResource.value()?.products ?? []" />
