@@ -50,6 +50,7 @@ export class ProductService {
         params: {
           limit,
           offset,
+          gender,
         },
       })
       .pipe(
