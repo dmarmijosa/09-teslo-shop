@@ -1,3 +1,3 @@
 export const environment = {
-  baseUrl: 'https://shop-dmarmijosa.duckdns.org/api',
+  baseUrl: 'https://teslo-shop.dmarmijosa.com/api',
 };
